@@ -2,36 +2,35 @@ package ru.gb.repository.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
-import lombok.Getter;
 import org.springframework.stereotype.Repository;
 import ru.gb.domain.Product;
-import ru.gb.exception.ProductNotFoundException;
 import ru.gb.repository.ProductRepository;
 
 @Repository
 public class ProductRepositoryImpl implements ProductRepository {
 
-  @Getter
+  private static final int PRODUCTS_COUNT = 5;
+
   private final List<Product> products = new ArrayList<>();
 
   public ProductRepositoryImpl() {
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < PRODUCTS_COUNT; i++) {
       products.add(buildProduct(i));
     }
   }
 
   @Override
-  public Product getById(int id) {
+  public Optional<Product> getById(int id) {
     return products.stream()
         .filter(product -> product.getId() == id)
-        .findFirst()
-        .orElseThrow(() -> new ProductNotFoundException(String.format("Product by id %s not found", id)));
+        .findFirst();
   }
 
   @Override
-  public List<Product> getAll() {
-    return products;
+  public Optional<List<Product>> getAll() {
+    return Optional.of(products);
   }
 
   private Product buildProduct(int id) {
